@@ -1,12 +1,17 @@
 <script setup>
+import MyCardList from './components/MyCardList.vue'
 import MyHeader from '/src/components/MyHeader.vue'
 </script>
 
 <template>
-  <div class="m-auto my-10 h-screen w-4/5 rounded-xl bg-white shadow-xl">
+  <div class="m-auto my-10 w-4/5 rounded-xl bg-white shadow-xl">
     <MyHeader />
 
-    <h1>Alex</h1>
+    <div class="p-10">
+      <h2 class="mb-8 text-3xl font-bold">Все кроссовки</h2>
+
+      <MyCardList />
+    </div>
   </div>
 </template>
 
