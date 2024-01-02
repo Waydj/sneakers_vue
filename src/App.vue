@@ -29,7 +29,12 @@ const fetchData = async () => {
     const response = await ky.get(url, { searchParams: params })
     const data = await response.json()
 
-    items.value = data.map((item) => ({ ...item, isFavorite: false, isAdded: false }))
+    items.value = data.map((item) => ({
+      ...item,
+      isFavorite: false,
+      isAdded: false,
+      favoriteId: null
+    }))
   } catch (error) {
     console.error(error)
   }
@@ -55,11 +60,20 @@ const fetchFavoritesData = async () => {
 }
 
 const addToFavorites = async (item) => {
-  item.isFavorite = !item.isFavorite
-
   try {
-    const url = `https://d79b62e8a63cb906.mokky.dev/favorites`
-    await ky.post(url, { json: { ...item, parentId: item.id } })
+    if (!item.isFavorite) {
+      const url = `https://d79b62e8a63cb906.mokky.dev/favorites`
+      const data = await ky.post(url, { json: { ...item, parentId: item.id } }).json()
+
+      item.isFavorite = true
+      item.favoriteId = data.id
+    } else {
+      const url = `https://d79b62e8a63cb906.mokky.dev/favorites/${item.favoriteId}`
+      await ky.delete(url)
+
+      item.isFavorite = false
+      item.favoriteId = null
+    }
   } catch (error) {
     console.error(error)
   }
