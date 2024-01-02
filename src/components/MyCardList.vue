@@ -7,6 +7,7 @@ defineProps({
 })
 
 const addToFavorites = inject('addToFavorites')
+const addToCart = inject('addToCart')
 </script>
 
 <template>
@@ -21,6 +22,7 @@ const addToFavorites = inject('addToFavorites')
       :isAdded="item.isAdded"
       :isFavorite="item.isFavorite"
       :onClickFavorite="() => addToFavorites(item)"
+      :onClickAdd="() => addToCart(item)"
     />
   </div>
 </template>

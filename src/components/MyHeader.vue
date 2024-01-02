@@ -1,3 +1,15 @@
+<script setup>
+defineProps({
+  totalPrice: Number
+})
+
+const emit = defineEmits(['onCartOpen'])
+
+const onCartOpenHandler = () => {
+  emit('onCartOpen')
+}
+</script>
+
 <template>
   <header class="flex justify-between border-b border-slate-400 px-10 py-8">
     <div class="flex items-center gap-4">
@@ -9,9 +21,12 @@
     </div>
 
     <ul class="flex items-center gap-10">
-      <li class="flex cursor-pointer items-center gap-3 text-slate-500 hover:text-black">
+      <li
+        @click="onCartOpenHandler"
+        class="flex cursor-pointer items-center gap-3 text-slate-500 hover:text-black"
+      >
         <img src="/cart.svg" alt="cart" />
-        <b>1290 руб.</b>
+        <b>{{ totalPrice }} руб.</b>
       </li>
       <li class="flex cursor-pointer items-center gap-3 text-slate-500 hover:text-black">
         <img src="/heart.svg" alt="heart" />

@@ -1,15 +1,25 @@
 <script setup>
-import { onMounted, provide, ref, watch } from 'vue'
+import { computed, onMounted, provide, ref, watch } from 'vue'
 import ky from 'ky'
 import MyCardList from './components/MyCardList.vue'
 import MyDrawer from './components/MyDrawer.vue'
 import MyHeader from '/src/components/MyHeader.vue'
 
 const items = ref([])
+const cartItems = ref([])
+
+const totalPrice = computed(() => cartItems.value.reduce((acc, item) => acc + item.price, 0))
+const vatPrice = computed(() => Math.round(totalPrice.value * 0.05))
+
+const isCartOpen = ref(false)
 const filters = ref({
   searchQuery: '',
   sortBy: 'title'
 })
+
+const onCartOpen = () => {
+  isCartOpen.value = !isCartOpen.value
+}
 
 const onChangeSelect = (e) => (filters.value.sortBy = e.target.value)
 const onSearch = (e) => (filters.value.searchQuery = e.target.value)
@@ -79,6 +89,16 @@ const addToFavorites = async (item) => {
   }
 }
 
+const addToCart = (item) => {
+  if (item.isAdded) {
+    item.isAdded = false
+    cartItems.value = cartItems.value.filter((cartItem) => cartItem.id !== item.id)
+  } else {
+    item.isAdded = true
+    cartItems.value.push(item)
+  }
+}
+
 onMounted(async () => {
   await fetchData()
   await fetchFavoritesData()
@@ -90,13 +110,20 @@ watch(filters.value, async () => {
 
 // Test provide / inject
 provide('addToFavorites', addToFavorites)
+provide('addToCart', addToCart)
+provide('cartItems', cartItems)
 </script>
 
 <template>
-  <!-- <MyDrawer /> -->
+  <MyDrawer
+    v-if="isCartOpen"
+    @onCartOpen="onCartOpen"
+    :totalPrice="totalPrice"
+    :vatPrice="vatPrice"
+  />
 
   <div class="m-auto my-10 w-4/5 rounded-xl bg-white shadow-xl">
-    <MyHeader />
+    <MyHeader @onCartOpen="onCartOpen" :totalPrice="totalPrice" />
 
     <div class="p-10">
       <div class="flex items-center justify-between">
