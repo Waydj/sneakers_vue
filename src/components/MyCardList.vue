@@ -1,9 +1,12 @@
 <script setup>
+import { inject } from 'vue'
 import MyCard from './MyCard.vue'
 
 defineProps({
   items: Array
 })
+
+const addToFavorites = inject('addToFavorites')
 </script>
 
 <template>
@@ -11,11 +14,13 @@ defineProps({
     <MyCard
       v-for="item in items"
       :key="item.id"
+      :id="item.id"
       :title="item.title"
       :img-url="item.imageUrl"
       :price="item.price"
-      :isAdded="false"
-      :isFavorite="false"
+      :isAdded="item.isAdded"
+      :isFavorite="item.isFavorite"
+      :onClickFavorite="() => addToFavorites(item)"
     />
   </div>
 </template>

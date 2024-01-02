@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, provide, ref, watch } from 'vue'
 import ky from 'ky'
 import MyCardList from './components/MyCardList.vue'
 import MyDrawer from './components/MyDrawer.vue'
@@ -29,14 +29,53 @@ const fetchData = async () => {
     const response = await ky.get(url, { searchParams: params })
     const data = await response.json()
 
-    items.value = data
+    items.value = data.map((item) => ({ ...item, isFavorite: false, isAdded: false }))
   } catch (error) {
     console.error(error)
   }
 }
 
-onMounted(fetchData)
-watch(filters.value, fetchData)
+const fetchFavoritesData = async () => {
+  try {
+    const url = `https://d79b62e8a63cb906.mokky.dev/favorites`
+
+    const response = await ky.get(url)
+    const data = await response.json()
+
+    items.value = items.value.map((item) => {
+      const favorite = data.find((favorite) => favorite.parentId === item.id)
+
+      if (!favorite) return item
+
+      return { ...item, isFavorite: true, favoriteId: favorite.id }
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const addToFavorites = async (item) => {
+  item.isFavorite = !item.isFavorite
+
+  try {
+    const url = `https://d79b62e8a63cb906.mokky.dev/favorites`
+    await ky.post(url, { json: { ...item, parentId: item.id } })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+onMounted(async () => {
+  await fetchData()
+  await fetchFavoritesData()
+})
+watch(filters.value, async () => {
+  await fetchData()
+  await fetchFavoritesData()
+})
+
+// Test provide / inject
+provide('addToFavorites', addToFavorites)
 </script>
 
 <template>
