@@ -117,11 +117,23 @@ const addToCart = (item) => {
 onMounted(async () => {
   await fetchData()
   await fetchFavoritesData()
+  cartItems.value = JSON.parse(localStorage.getItem('cartItems')) || []
+  items.value = items.value.map((item) => ({
+    ...item,
+    isAdded: cartItems.value.some((cartItem) => cartItem.id === item.id)
+  }))
 })
 watch(filters.value, async () => {
   await fetchData()
   await fetchFavoritesData()
 })
+watch(
+  cartItems,
+  () => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems.value))
+  },
+  { deep: true }
+)
 
 // Test provide / inject
 provide('addToFavorites', addToFavorites)
