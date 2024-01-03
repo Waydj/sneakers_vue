@@ -7,10 +7,14 @@ defineProps({
   vatPrice: Number
 })
 
-const emit = defineEmits(['onCartOpen'])
+const emit = defineEmits(['onCartOpen', 'createOrder'])
 
 const onCartOpenHandler = () => {
   emit('onCartOpen')
+}
+
+const onCreateOrder = () => {
+  emit('createOrder')
 }
 </script>
 
@@ -32,6 +36,8 @@ const onCartOpenHandler = () => {
         <b>{{ vatPrice }} руб.</b>
       </div>
       <button
+        @click="onCreateOrder"
+        :disabled="totalPrice ? false : true"
         class="w-full cursor-pointer rounded-xl bg-lime-500 p-4 text-white transition hover:bg-lime-600 active:bg-lime-700 disabled:cursor-not-allowed disabled:bg-slate-400"
       >
         Оформить заказ

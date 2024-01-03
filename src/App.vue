@@ -89,6 +89,21 @@ const addToFavorites = async (item) => {
   }
 }
 
+const createOrder = async () => {
+  try {
+    const url = `https://d79b62e8a63cb906.mokky.dev/orders`
+    const data = await ky
+      .post(url, { json: { items: cartItems.value, totalPrice: totalPrice.value } })
+      .json()
+
+    cartItems.value = []
+    items.value = items.value.map((item) => ({ ...item, isAdded: false }))
+    return data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 const addToCart = (item) => {
   if (item.isAdded) {
     item.isAdded = false
@@ -118,6 +133,7 @@ provide('cartItems', cartItems)
   <MyDrawer
     v-if="isCartOpen"
     @onCartOpen="onCartOpen"
+    @createOrder="createOrder"
     :totalPrice="totalPrice"
     :vatPrice="vatPrice"
   />
