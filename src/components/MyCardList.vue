@@ -11,7 +11,7 @@ const addToCart = inject('addToCart')
 </script>
 
 <template>
-  <div class="mt-10 grid grid-cols-4 gap-5">
+  <div class="mt-10 grid grid-cols-4 gap-5" v-auto-animate>
     <MyCard
       v-for="item in items"
       :key="item.id"
