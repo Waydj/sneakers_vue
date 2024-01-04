@@ -7,7 +7,8 @@ defineProps({
   isFavorite: Boolean,
   isAdded: Boolean,
   onClickFavorite: Function,
-  onClickAdd: Function
+  onClickAdd: Function,
+  noButtons: Boolean
 })
 </script>
 
@@ -16,6 +17,7 @@ defineProps({
     class="relative cursor-pointer rounded-3xl border border-slate-100 bg-white p-8 transition hover:-translate-y-2 hover:shadow-xl"
   >
     <img
+      v-if="!noButtons"
       @click="onClickFavorite"
       :src="!isFavorite ? '/like-1.svg' : '/like-2.svg'"
       alt="like 1"
@@ -31,6 +33,7 @@ defineProps({
       </div>
 
       <img
+        v-if="!noButtons"
         class="opacity-70 transition hover:opacity-100"
         @click="onClickAdd"
         :src="!isAdded ? '/plus.svg' : '/checked.svg'"

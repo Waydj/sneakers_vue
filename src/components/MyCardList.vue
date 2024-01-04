@@ -3,7 +3,8 @@ import { inject } from 'vue'
 import MyCard from './MyCard.vue'
 
 defineProps({
-  items: Array
+  items: Array,
+  noButtons: Boolean
 })
 
 const addToFavorites = inject('addToFavorites')
@@ -23,6 +24,7 @@ const addToCart = inject('addToCart')
       :isFavorite="item.isFavorite"
       :onClickFavorite="() => addToFavorites(item)"
       :onClickAdd="() => addToCart(item)"
+      :noButtons="noButtons"
     />
   </div>
 </template>

@@ -28,10 +28,12 @@ const onCartOpenHandler = () => {
         <img src="/cart.svg" alt="cart" />
         <b>{{ totalPrice }} руб.</b>
       </li>
-      <li class="flex cursor-pointer items-center gap-3 text-slate-500 hover:text-black">
-        <img src="/heart.svg" alt="heart" />
-        <RouterLink to="/favorites">Закладки</RouterLink>
-      </li>
+      <RouterLink to="/favorites">
+        <li class="flex cursor-pointer items-center gap-3 text-slate-500 hover:text-black">
+          <img src="/heart.svg" alt="heart" />
+          Закладки
+        </li>
+      </RouterLink>
       <li class="flex cursor-pointer items-center gap-3 text-slate-500 hover:text-black">
         <img src="/profile.svg" alt="profile" />
         <span>Профиль</span>
