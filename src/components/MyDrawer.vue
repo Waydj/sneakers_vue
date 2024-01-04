@@ -4,6 +4,7 @@ import ky from 'ky'
 import MyCartItemList from './MyCartItemList.vue'
 import MyDrawerHead from './MyDrawerHead.vue'
 import MyInfoBlock from './MyInfoBlock.vue'
+import { SERVER_URL } from '../services/api'
 
 const items = inject('items')
 const cartItems = inject('cartItems')
@@ -19,7 +20,7 @@ const onCartOpenHandler = () => {
 
 const createOrder = async () => {
   try {
-    const url = `https://d79b62e8a63cb906.mokky.dev/orders`
+    const url = `${SERVER_URL}/orders`
     const data = await ky
       .post(url, { json: { items: cartItems.value, totalPrice: totalPrice.value } })
       .json()

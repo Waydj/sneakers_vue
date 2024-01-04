@@ -2,12 +2,13 @@
 import { ref, onMounted } from 'vue'
 import ky from 'ky'
 import MyCardList from '@/components/MyCardList.vue'
+import { SERVER_URL } from '../services/api'
 
 const items = ref([])
 
 const fetchFavoritesData = async () => {
   try {
-    const url = `https://d79b62e8a63cb906.mokky.dev/favorites?_relations=items`
+    const url = `${SERVER_URL}/favorites?_relations=items`
 
     const response = await ky.get(url)
     const data = await response.json()

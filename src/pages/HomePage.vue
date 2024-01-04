@@ -1,12 +1,13 @@
 <script setup>
 import MyCardList from '../components/MyCardList.vue'
 import { inject } from 'vue'
+import debounce from 'lodash.debounce'
 
 const items = inject('items')
 const filters = inject('filters')
 
 const onChangeSelect = (e) => (filters.value.sortBy = e.target.value)
-const onSearch = (e) => (filters.value.searchQuery = e.target.value)
+const onSearch = debounce((e) => (filters.value.searchQuery = e.target.value), 300)
 </script>
 
 <template>

@@ -1,9 +1,10 @@
 <script setup>
 import { onMounted, provide, ref, watch } from 'vue'
+import { RouterView } from 'vue-router'
 import ky from 'ky'
 import MyDrawer from './components/MyDrawer.vue'
 import MyHeader from '/src/components/MyHeader.vue'
-import { RouterView } from 'vue-router'
+import { SERVER_URL } from './services/api'
 
 const items = ref([])
 const cartItems = ref([])
@@ -20,7 +21,7 @@ const onCartOpen = () => {
 
 const fetchData = async () => {
   try {
-    const url = `https://d79b62e8a63cb906.mokky.dev/items`
+    const url = `${SERVER_URL}/items`
 
     const params = {
       sortBy: filters.value.sortBy
@@ -46,7 +47,7 @@ const fetchData = async () => {
 
 const fetchFavoritesData = async () => {
   try {
-    const url = `https://d79b62e8a63cb906.mokky.dev/favorites`
+    const url = `${SERVER_URL}/favorites`
 
     const response = await ky.get(url)
     const data = await response.json()
@@ -66,13 +67,13 @@ const fetchFavoritesData = async () => {
 const addToFavorites = async (item) => {
   try {
     if (!item.isFavorite) {
-      const url = `https://d79b62e8a63cb906.mokky.dev/favorites`
+      const url = `${SERVER_URL}/favorites`
       const data = await ky.post(url, { json: { item_id: item.id } }).json()
 
       item.isFavorite = true
       item.favoriteId = data.id
     } else {
-      const url = `https://d79b62e8a63cb906.mokky.dev/favorites/${item.favoriteId}`
+      const url = `${SERVER_URL}/favorites/${item.favoriteId}`
       await ky.delete(url)
 
       item.isFavorite = false
