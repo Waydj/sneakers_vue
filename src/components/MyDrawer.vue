@@ -1,21 +1,35 @@
 <script setup>
+import { inject, computed } from 'vue'
+import ky from 'ky'
 import MyCartItemList from './MyCartItemList.vue'
 import MyDrawerHead from './MyDrawerHead.vue'
 import MyInfoBlock from './MyInfoBlock.vue'
 
-defineProps({
-  totalPrice: Number,
-  vatPrice: Number
-})
+const items = inject('items')
+const cartItems = inject('cartItems')
 
-const emit = defineEmits(['onCartOpen', 'createOrder'])
+const totalPrice = computed(() => cartItems.value.reduce((acc, item) => acc + item.price, 0))
+const vatPrice = computed(() => Math.round(totalPrice.value * 0.05))
+
+const emit = defineEmits(['onCartOpen'])
 
 const onCartOpenHandler = () => {
   emit('onCartOpen')
 }
 
-const onCreateOrder = () => {
-  emit('createOrder')
+const createOrder = async () => {
+  try {
+    const url = `https://d79b62e8a63cb906.mokky.dev/orders`
+    const data = await ky
+      .post(url, { json: { items: cartItems.value, totalPrice: totalPrice.value } })
+      .json()
+
+    cartItems.value = []
+    items.value = items.value.map((item) => ({ ...item, isAdded: false }))
+    return data
+  } catch (error) {
+    console.error(error)
+  }
 }
 </script>
 
@@ -46,7 +60,7 @@ const onCreateOrder = () => {
           <b>{{ vatPrice }} руб.</b>
         </div>
         <button
-          @click="onCreateOrder"
+          @click="createOrder"
           :disabled="totalPrice ? false : true"
           class="w-full cursor-pointer rounded-xl bg-lime-500 p-4 text-white transition hover:bg-lime-600 active:bg-lime-700 disabled:cursor-not-allowed disabled:bg-slate-400"
         >

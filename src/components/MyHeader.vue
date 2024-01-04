@@ -1,9 +1,10 @@
 <script setup>
-defineProps({
-  totalPrice: Number
-})
+import { inject, computed } from 'vue'
 
 const emit = defineEmits(['onCartOpen'])
+const cartItems = inject('cartItems')
+
+const totalPrice = computed(() => cartItems.value.reduce((acc, item) => acc + item.price, 0))
 
 const onCartOpenHandler = () => {
   emit('onCartOpen')

@@ -7,12 +7,12 @@ const items = ref([])
 
 const fetchFavoritesData = async () => {
   try {
-    const url = `https://d79b62e8a63cb906.mokky.dev/favorites`
+    const url = `https://d79b62e8a63cb906.mokky.dev/favorites?_relations=items`
 
     const response = await ky.get(url)
     const data = await response.json()
 
-    items.value = data
+    items.value = data.map((item) => item.item)
   } catch (error) {
     console.error(error)
   }

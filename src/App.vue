@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, provide, ref, watch } from 'vue'
+import { onMounted, provide, ref, watch } from 'vue'
 import ky from 'ky'
 import MyDrawer from './components/MyDrawer.vue'
 import MyHeader from '/src/components/MyHeader.vue'
@@ -7,9 +7,6 @@ import { RouterView } from 'vue-router'
 
 const items = ref([])
 const cartItems = ref([])
-
-const totalPrice = computed(() => cartItems.value.reduce((acc, item) => acc + item.price, 0))
-const vatPrice = computed(() => Math.round(totalPrice.value * 0.05))
 
 const isCartOpen = ref(false)
 const filters = ref({
@@ -55,7 +52,7 @@ const fetchFavoritesData = async () => {
     const data = await response.json()
 
     items.value = items.value.map((item) => {
-      const favorite = data.find((favorite) => favorite.parentId === item.id)
+      const favorite = data.find((favorite) => favorite.item_id === item.id)
 
       if (!favorite) return item
 
@@ -70,7 +67,7 @@ const addToFavorites = async (item) => {
   try {
     if (!item.isFavorite) {
       const url = `https://d79b62e8a63cb906.mokky.dev/favorites`
-      const data = await ky.post(url, { json: { ...item, parentId: item.id } }).json()
+      const data = await ky.post(url, { json: { item_id: item.id } }).json()
 
       item.isFavorite = true
       item.favoriteId = data.id
@@ -81,21 +78,6 @@ const addToFavorites = async (item) => {
       item.isFavorite = false
       item.favoriteId = null
     }
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-const createOrder = async () => {
-  try {
-    const url = `https://d79b62e8a63cb906.mokky.dev/orders`
-    const data = await ky
-      .post(url, { json: { items: cartItems.value, totalPrice: totalPrice.value } })
-      .json()
-
-    cartItems.value = []
-    items.value = items.value.map((item) => ({ ...item, isAdded: false }))
-    return data
   } catch (error) {
     console.error(error)
   }
@@ -141,16 +123,10 @@ provide('items', items)
 </script>
 
 <template>
-  <MyDrawer
-    v-if="isCartOpen"
-    @onCartOpen="onCartOpen"
-    @createOrder="createOrder"
-    :totalPrice="totalPrice"
-    :vatPrice="vatPrice"
-  />
+  <MyDrawer v-if="isCartOpen" @onCartOpen="onCartOpen" />
 
   <div class="m-auto my-10 w-4/5 rounded-xl bg-white shadow-xl">
-    <MyHeader @onCartOpen="onCartOpen" :totalPrice="totalPrice" />
+    <MyHeader @onCartOpen="onCartOpen" />
 
     <div class="p-10">
       <RouterView />
