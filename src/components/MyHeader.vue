@@ -15,7 +15,7 @@ const onCartOpenHandler = () => {
     <div class="flex items-center gap-4">
       <img src="/logo.png" alt="logo" class="w-10" />
       <div>
-        <h2 class="text-xl font-bold uppercase">Vue Sneakers</h2>
+        <RouterLink to="/"><h2 class="text-xl font-bold uppercase">Vue Sneakers</h2></RouterLink>
         <p class="text-slate-500">Магазин лучших кроссовок</p>
       </div>
     </div>
@@ -30,7 +30,7 @@ const onCartOpenHandler = () => {
       </li>
       <li class="flex cursor-pointer items-center gap-3 text-slate-500 hover:text-black">
         <img src="/heart.svg" alt="heart" />
-        <span>Закладки</span>
+        <RouterLink to="/favorites">Закладки</RouterLink>
       </li>
       <li class="flex cursor-pointer items-center gap-3 text-slate-500 hover:text-black">
         <img src="/profile.svg" alt="profile" />

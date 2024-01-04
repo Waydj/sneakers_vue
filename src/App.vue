@@ -1,9 +1,9 @@
 <script setup>
 import { computed, onMounted, provide, ref, watch } from 'vue'
 import ky from 'ky'
-import MyCardList from './components/MyCardList.vue'
 import MyDrawer from './components/MyDrawer.vue'
 import MyHeader from '/src/components/MyHeader.vue'
+import { RouterView } from 'vue-router'
 
 const items = ref([])
 const cartItems = ref([])
@@ -20,9 +20,6 @@ const filters = ref({
 const onCartOpen = () => {
   isCartOpen.value = !isCartOpen.value
 }
-
-const onChangeSelect = (e) => (filters.value.sortBy = e.target.value)
-const onSearch = (e) => (filters.value.searchQuery = e.target.value)
 
 const fetchData = async () => {
   try {
@@ -139,6 +136,8 @@ watch(
 provide('addToFavorites', addToFavorites)
 provide('addToCart', addToCart)
 provide('cartItems', cartItems)
+provide('filters', filters)
+provide('items', items)
 </script>
 
 <template>
@@ -154,29 +153,7 @@ provide('cartItems', cartItems)
     <MyHeader @onCartOpen="onCartOpen" :totalPrice="totalPrice" />
 
     <div class="p-10">
-      <div class="flex items-center justify-between">
-        <h2 class="mb-8 text-3xl font-bold">Все кроссовки</h2>
-
-        <div class="flex gap-4">
-          <select @change="onChangeSelect" class="rounded-md border px-3 py-2 outline-none">
-            <option value="title">По названию</option>
-            <option value="price">По цене (дешевле)</option>
-            <option value="-price">По цене (дороже)</option>
-          </select>
-
-          <div class="relative">
-            <img class="absolute left-4 top-3" src="/search.svg" alt="search" />
-            <input
-              @input="onSearch"
-              type="search"
-              placeholder="Поиск..."
-              class="rounded-md border py-2 pl-11 pr-4 outline-none focus:border-slate-500"
-            />
-          </div>
-        </div>
-      </div>
-
-      <MyCardList :items="items" />
+      <RouterView />
     </div>
   </div>
 </template>
